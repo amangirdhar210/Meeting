@@ -1,0 +1,700 @@
+openapi: 3.0.0
+info:
+  title: Meeting Room Management API
+  version: 1.0.0
+  description: API for managing meeting rooms, users, and bookings in an office.
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              example:
+                code: 201
+                message: "Created Successfully"
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request - Invalid input data
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - User already exists
+          content:
+            application/json:
+              example:
+                code: 409
+                message: "User Already Exists"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{employeeId}:
+    get:
+      summary: Get user by employee ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: employeeId
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the employee
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request – Invalid ID format
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "Not Found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete user by employee ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: employeeId
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the employee to delete
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User deleted
+        '400':
+          description: Bad Request – Invalid ID format
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "Not Found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /meetingrooms:
+    get:
+      summary: Get all meeting rooms
+      tags:
+        - MeetingRooms
+      responses:
+        '200':
+          description: List of meeting rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingRoom'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Add a new meeting room
+      tags:
+        - MeetingRooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingRoom'
+      responses:
+        '201':
+          description: Meeting room created successfully
+          content:
+            application/json:
+              example:
+                code: 201
+                message: "Created Successfully"
+              schema:
+                $ref: '#/components/schemas/MeetingRoom'
+        '400':
+          description: Bad Request - Invalid input data
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - Meeting room already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /meetingrooms/{roomId}:
+    delete:
+      summary: Delete a meeting room
+      tags:
+        - MeetingRooms
+      parameters:
+        - in: path
+          name: roomId
+          required: true
+          schema:
+            type: string
+          description: ID of the meeting room to delete
+      responses:
+        '200':
+          description: Meeting room deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Meeting room deleted
+        '400':
+          description: Bad Request – Invalid room ID format
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Meeting room not found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "Not Found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /meetingrooms/search:
+    get:
+      summary: Search meeting rooms
+      tags:
+        - MeetingRooms
+      parameters:
+        - in: query
+          name: capacity
+          schema:
+            type: integer
+            minimum: 1
+          description: Minimum seating capacity required
+        - in: query
+          name: hasProjector
+          schema:
+            type: boolean
+          description: Filter rooms with projector
+        - in: query
+          name: hasCamera
+          schema:
+            type: boolean
+          description: Filter rooms with video conferencing camera
+        - in: query
+          name: isAvailable
+          schema:
+            type: boolean
+          description: Filter rooms that are currently available
+      responses:
+        '200':
+          description: List of matching meeting rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingRoom'
+        '400':
+          description: Bad Request - Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /meetingrooms/floor/{floor}:
+    get:
+      summary: Get meeting rooms by floor
+      tags:
+        - MeetingRooms
+      parameters:
+        - in: path
+          name: floor
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+          description: Floor number to retrieve meeting rooms from
+      responses:
+        '200':
+          description: Meeting rooms on the requested floor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingRoom'
+        '400':
+          description: Bad Request – Invalid floor number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No meeting rooms found on the specified floor
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "Not Found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /bookings:
+    get:
+      summary: Get bookings of the logged-in user
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of bookings for the logged-in user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a booking
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              example:
+                code: 201
+                message: "Created Successfully"
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad Request - Invalid booking data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User must be logged in
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - Time slot already booked
+          content:
+            application/json:
+              example:
+                code: 409
+                message: "Time Slot Already Booked"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bookings/{bookingId}:
+    delete:
+      summary: Cancel a booking
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking to cancel
+      responses:
+        '200':
+          description: Booking cancelled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Booking cancelled
+        '400':
+          description: Bad Request – Invalid booking ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized – User must be logged in
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden – Booking belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "User not found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        employeeId:
+          type: string
+        department:
+          type: string
+        bookingId:
+          type: string
+        schedule:
+          type: string
+
+    MeetingRoom:
+      type: object
+      properties:
+        id:
+          type: string
+        roomNumber:
+          type: string
+        floor:
+          type: integer
+        capacity:
+          type: integer
+        hasProjector:
+          type: boolean
+        hasCamera:
+          type: boolean
+        isAvailable:
+          type: boolean
+        bookingIds:
+          type: array
+          items:
+            type: string
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        roomId:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid request
+
