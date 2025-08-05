@@ -7,6 +7,109 @@ servers:
   - url: http://localhost:8080/api/v1
 
 paths:
+  /auth/login:
+    post:
+      summary: User login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT access token
+        '400':
+          description: Bad Request - Invalid input data
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - User already exists
+          content:
+            application/json:
+              example:
+                code: 409
+                message: "User Already Exists"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      summary: User logout
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
   /users:
     get:
       summary: Get all users
