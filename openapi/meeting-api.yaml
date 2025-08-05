@@ -12,6 +12,10 @@ paths:
       summary: Get all users
       tags:
         - Users
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       responses:
         '200':
           description: List of users
@@ -45,6 +49,10 @@ paths:
       summary: Create a new user
       tags:
         - Users
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       requestBody:
         required: true
         content:
@@ -100,6 +108,10 @@ paths:
       summary: Get user by employee ID
       tags:
         - Users
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       parameters:
         - in: path
           name: employeeId
@@ -154,6 +166,10 @@ paths:
       summary: Delete user by employee ID
       tags:
         - Users
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       parameters:
         - in: path
           name: employeeId
@@ -214,6 +230,11 @@ paths:
       summary: Get all meeting rooms
       tags:
         - MeetingRooms
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
       responses:
         '200':
           description: List of meeting rooms
@@ -246,6 +267,10 @@ paths:
       summary: Add a new meeting room
       tags:
         - MeetingRooms
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       requestBody:
         required: true
         content:
@@ -302,6 +327,10 @@ paths:
       summary: Delete a meeting room
       tags:
         - MeetingRooms
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
       parameters:
         - in: path
           name: roomId
@@ -362,6 +391,11 @@ paths:
       summary: Search meeting rooms
       tags:
         - MeetingRooms
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
       parameters:
         - in: query
           name: capacity
@@ -423,6 +457,11 @@ paths:
       summary: Get meeting rooms by floor
       tags:
         - MeetingRooms
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
       parameters:
         - in: path
           name: floor
@@ -479,6 +518,9 @@ paths:
         - Bookings
       security:
         - bearerAuth: []
+      x-roles:
+        - admin
+        - user
       responses:
         '200':
           description: List of bookings for the logged-in user
@@ -564,6 +606,64 @@ paths:
                 $ref: '#/components/schemas/Error'
 
   /bookings/{bookingId}:
+    
+    get:
+      summary: Get booking by ID
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking to retrieve
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request – Invalid ID format
+          content:
+            application/json:
+              example:
+                code: 400
+                message: "Invalid ID format"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - User is not logged in or token is invalid
+          content:
+            application/json:
+              example:
+                code: 401
+                message: "Authentication required or token invalid"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: "Not Found"
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                code: 500
+                message: "Internal Server Error"
+              schema:
+                $ref: '#/components/schemas/Error'
+
     delete:
       summary: Cancel a booking
       tags:
