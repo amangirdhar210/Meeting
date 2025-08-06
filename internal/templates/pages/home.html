@@ -1,0 +1,23 @@
+{{ define "title" }}Home | MeetingRoom{{ end }}
+
+{{ define "content" }}
+<h2>Welcome to MeetingRoom</h2>
+<p>Your go-to place for finding and booking meeting rooms in your office.</p>
+{{ end }}
+
+
+// ✅ search.html - Search Page
+
+<!-- internal/templates/pages/search.html -->
+{{ define "title" }}Search Rooms | MeetingRoom{{ end }}
+
+{{ define "content" }}
+<h2>Search Meeting Rooms</h2>
+<form action="/search" method="get">
+    <label>Location: <input type="text" name="location"></label>
+    <label>Min Capacity: <input type="number" name="capacity"></label>
+    <label><input type="checkbox" name="video_conf"> Video Conference?</label>
+    <button type="submit">Search</button>
+</form>
+<p>Results will be shown here...</p>
+{{ end }}

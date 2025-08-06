@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ block "title" . }}MeetingRoom{{ end }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/scripts.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>MeetingRoom</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/search">Search</a></li>
+                <li><a href="/book">Book</a></li>
+                <li><a href="/rooms">Rooms</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {{ block "content" . }}{{ end }}
+    </main>
+    <footer>
+        <p>&copy; 2025 MeetingRoom Inc.</p>
+    </footer>
+</body>
+</html>

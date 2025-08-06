@@ -1,0 +1,13 @@
+{{ define "title" }}Book Room | MeetingRoom{{ end }}
+
+{{ define "content" }}
+<h2>Book a Meeting Room</h2>
+<form action="/book" method="post">
+    <label>Room ID: <input type="text" name="room_id"></label>
+    <label>Date: <input type="date" name="date"></label>
+    <label>Start Time: <input type="time" name="start_time"></label>
+    <label>End Time: <input type="time" name="end_time"></label>
+    <button type="submit">Book</button>
+</form>
+<p>Booking status will appear here.</p>
+{{ end }}
